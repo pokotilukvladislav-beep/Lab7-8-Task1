@@ -8,7 +8,7 @@ terraform {
   }
 
   backend "gcs" {
-    bucket = "НАЗВА_ТВОГО_БАКЕТА"
+    bucket = "lab78-tf-state-pokotiluk"
     prefix = "terraform/task1"
   }
 }
