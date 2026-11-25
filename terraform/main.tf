@@ -1,0 +1,54 @@
+terraform {
+  required_version = ">= 1.0.0"
+  required_providers {
+    google = {
+      source  = "hashicorp/google"
+      version = "~> 5.0"
+    }
+  }
+
+  backend "gcs" {
+    bucket = "НАЗВА_ТВОГО_БАКЕТА"
+    prefix = "terraform/task1"
+  }
+}
+
+provider "google" {
+  project = var.project_id
+  region  = "europe-central2"
+}
+
+variable "project_id" {
+  type = string
+}
+
+variable "image_uri" {
+  type = string
+}
+
+resource "google_cloud_run_v2_service" "flask_basic_application" {
+  name     = "flask-basic-app"
+  location = "europe-central2"
+  ingress  = "INGRESS_TRAFFIC_ALL"
+
+  template {
+    containers {
+      image = var.image_uri
+      ports {
+        container_port = 8080
+      }
+    }
+  }
+}
+
+resource "google_cloud_run_v2_service_iam_member" "public_access" {
+  project  = google_cloud_run_v2_service.flask_basic_application.project
+  location = google_cloud_run_v2_service.flask_basic_application.location
+  name     = google_cloud_run_v2_service.flask_basic_application.name
+  role     = "roles/run.invoker"
+  member   = "allUsers"
+}
+
+output "service_url" {
+  value = google_cloud_run_v2_service.flask_basic_application.uri
+}
