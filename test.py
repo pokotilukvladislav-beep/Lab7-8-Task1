@@ -10,10 +10,11 @@ class FlaskAppTests(unittest.TestCase):
     def test_get_hello_endpoint(self):
         r = self.app.get('/')
         self.assertEqual(r.status_code, 200)
-       self.assertEqual(
+        self.assertEqual(
             r.get_data(),
             b'Hello world from GCP Cloud Run v2!'
-       )
+        )
+
 
 if __name__ == '__main__':
     unittest.main()
